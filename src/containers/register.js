@@ -4,7 +4,9 @@ import {
 	View,
 	TouchableHighlight,
 	TextInput,
-	ActivityIndicator
+	ActivityIndicator,
+	StyleSheet,
+	ScrollView
 } from 'react-native';
 
 import {connect} from 'react-redux';
@@ -14,6 +16,30 @@ import InputBox from '../components/inputBox';
 import * as authAction from '../actions/authActions';
 import {bindActionCreators} from 'redux';
 
+
+const styles = StyleSheet.create({
+	container : {
+		marginTop : 65,
+		padding : 10,
+		flexDirection : "column",
+		justifyContent : "space-between",
+		flex:1
+	},
+	inputContainer: {
+		flex:1
+	},
+	buttonContainer: {
+		flex:2
+	},
+	textContainer : {
+		marginTop: 30,
+		alignItems: 'center',
+		padding: 10
+	},
+	textField : {
+		fontSize : 20
+	}
+})
 function mapStateToProps(store){
 	return {
 		username : store.auth.form.username,
@@ -46,14 +72,26 @@ class register extends Component {
 	}
 	render(){
 		const activityIndicator  = this.props.isfetching ? (<ActivityIndicator size="large"/>) : null;
+		const username = this.props.username;
+		const pass = this.props.password;
+		const email = this.props.email;
 		return (
-		    <View>
-				<InputBox fieldName = {'username'} placeholderString = {'username'} setInputValue={this.setInputValue} fieldValue={this.props.username} />
-			    <InputBox fieldName = {'password'} secure={true} placeholderString = {'password'} setInputValue={this.setInputValue} fieldValue={this.props.password}/>
-				<InputBox fieldName = {'email'} placeholderString={"email"}  setInputValue={this.setInputValue} fieldValue={this.props.email}/>	
-				<FormButton buttonText={'register'} onButtonPress={this.register}/>
+	        <ScrollView horizontal={false}>
+		    <View style={styles.container}>
+			    <View style={styles.inputContainer}>
+					<InputBox fieldName = {'username'} placeholderString = {'username'} setInputValue={this.setInputValue} fieldValue={this.props.username} />
+				    <InputBox fieldName = {'password'} secure={true} placeholderString = {'password'} setInputValue={this.setInputValue} fieldValue={this.props.password}/>
+					<InputBox fieldName = {'email'} placeholderString={"email"}  setInputValue={this.setInputValue} fieldValue={this.props.email}/>	
+				</View>
+				<View style={styles.buttonContainer}>
+					<FormButton buttonText={'register'} onButtonPress={this.register} disable={!(username && pass && email)}/>
+					<View style={styles.textContainer}>
+						<Text style={styles.textField} onPress={Actions.Login}>No Account Yet? Create One</Text>
+					</View>
+				</View>
 				{activityIndicator}
-			</View>   
+			</View>
+			</ScrollView>   
 		        );
 	}
 }

@@ -4,8 +4,12 @@ import { View,
 		TouchableHighlight,
 		StyleSheet
 		} from 'react-native'
-	
+const Button = require('apsl-react-native-button')
 const styles = StyleSheet.create({
+	buttonContainer : {
+		marginTop: 30,
+		alignItems : 'center'
+	},
 	'buttonStyle' : {
 		borderWidth : 1,
 		borderRadius : 8,
@@ -17,7 +21,10 @@ const styles = StyleSheet.create({
 		paddingRight : 10,
 		alignItems : 'center',
 		height : 36,
-		
+		alignSelf : 'stretch'
+	},
+	buttonText: {
+		fontSize : 15
 	}
 });
 		
@@ -28,9 +35,9 @@ export default class FormButton extends Component {
 	
 	render(){
 		return (
-	        <TouchableHighlight style={styles.buttonStyle} underlayColor='#cce6ff'>
-	        	<Text onPress={this.props.onButtonPress}>{this.props.buttonText}</Text>
-	        </TouchableHighlight>
+	        <View style={styles.buttonContainer}>
+		        <Button style={styles.buttonStyle} isDisabled={this.props.disable} textStyle={styles.buttonText} onPress={this.props.onButtonPress}>{this.props.buttonText}</Button>
+	        </View>
 		        );
 	}
 }

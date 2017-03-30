@@ -2,8 +2,15 @@ import React, {Component} from 'react';
 import {
 	Text,
 	View,
-	TextInput
+	TextInput,
+	StyleSheet
 } from 'react-native';
+
+const styles = StyleSheet.create({
+	inputBoxContainer : {
+		marginTop : 10
+	}
+})
 
 export default class FormInput extends Component {
 	constructor(props){
@@ -13,8 +20,7 @@ export default class FormInput extends Component {
 	
 	render(){
 		return (
-	        <View>
-	        	<Text>{this.props.fieldName}</Text>
+	        <View style={styles.inputBoxContainer}>
 	        	<TextInput 
 	        	name= {this.props.fieldName}
 	        	placeholder={this.props.placeholderString} 

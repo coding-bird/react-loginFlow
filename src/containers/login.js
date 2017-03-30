@@ -18,9 +18,23 @@ import {bindActionCreators} from 'redux';
 import validate from '../lib/fieldValidation';
 
 const styles = StyleSheet.create({
-	loginContainer: {
-		flexDirection : 'row',
-		justifyContent: 'space-between'
+	loginContainer : {
+		marginTop: 65,
+		padding : 10,
+		flexDirection: 'column',
+		// backgroundColor : 'steelblue',
+		// justifyContent: 'space-between',
+		flex : 1
+	},
+	inputContainer: {
+		flex: 1,
+		// backgroundColor: 'blue'
+	},
+	loginButtonsContainer: {
+		flexDirection : 'column',
+		// justifyContent: 'space-around',
+		flex : 3,
+		// backgroundColor : 'gray'
 	}
 });
 console.log("******", authAction);
@@ -48,6 +62,7 @@ class login extends Component {
 		super(props);
 		this.login = this.login.bind(this);
 		this.setInputValue = this.setInputValue.bind(this);
+		console.log('login constructor');
 	}
 	login(){
 		// alert('loginuser');
@@ -67,6 +82,7 @@ class login extends Component {
 		// 	alert(fieldName+'  '+value);
 		// }
 		// if(fieldName == 'username'){
+			console.log('chnaging'+ fieldName + 'in store');
 			this.props.actions.formValueChanges(fieldName, value);
 		// }
 		
@@ -74,18 +90,20 @@ class login extends Component {
 	render(){
 		console.log(this.props.username);
 		console.log(this.props.password);
-		
+		const username = this.props.username;
+		const pass = this.props.password;
 		let activityIndicator = this.props.isfetching ? (<ActivityIndicator size="large"/>) : null ;
-		return (<View style={{flex:1}}>
-		        <View style={{flexDirection: 'column', justifyContent: 'space-between', backgroundColor: 'blue'}}>
-			    	<InputBox fieldName = {'username'} placeholderString = {'username'} setInputValue={this.setInputValue} fieldValue={this.props.username}/>
-			    	<InputBox fieldName = {'password'} secure={true} placeholderString = {'password'} setInputValue={this.setInputValue} fieldValue={this.props.password}/>
-			    	<View style={styles.loginContainer}>
-			    		<FormButton buttonText={'login'} onButtonPress={this.login}/>
-			    		<FormButton buttonText={'go to register'} onButtonPress={Actions.Register}/>
+		return (
+		        <View style={styles.loginContainer}>
+		        	<View style={styles.inputContainer}>
+				    	<InputBox fieldName = {'username'} placeholderString = {'username'} setInputValue={this.setInputValue} fieldValue={this.props.username}/>
+				    	<InputBox fieldName = {'password'} secure={true} placeholderString = {'password'} setInputValue={this.setInputValue} fieldValue={this.props.password}/>
+				    </View>
+			    	<View style={styles.loginButtonsContainer}>
+			    		<FormButton buttonText={'login'} onButtonPress={this.login} disable={!(username && pass)}/>
+			    		<FormButton buttonText={'sign up'} disable={false} onButtonPress={Actions.Register}/>
 			    	</View>
 			    	{activityIndicator}
-		    	</View>
 		    	</View>
 		        );
 	}

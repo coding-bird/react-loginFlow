@@ -1,6 +1,7 @@
 'use strict'
 
 import authAction from '../actions/authActions';
+import fieldValidation from '../lib/fieldValidation';
 
 const initialState = {
 	form : {
@@ -24,13 +25,31 @@ const initialState = {
 	registerRequested: false
 }
 export default function authReducer(state=initialState, action){
+	let nextState,valid;
 	switch(action.type){
 		case 'username_entered': 
-			return {...state, form: { ...state.form, username:action.payload}};
+			valid = /^[a-zA-Z0-9]{6,12}$/.test(action.payload);
+			if(valid){
+				return {...state, form : {...state.form, username:action.payload, usernameHasError : false, usernameErrorMsg : ''}}
+			} else{
+				return {...state, form : {...state.form, username:action.payload, usernameHasError : true, usernameErrorMsg : 'username should be of 6 to 12 characters'}}
+			}
+			// return fieldValidation(nextState, {fieldname: 'username', value: action.value});
 		case 'password_entered': 
-			return {...state, form: {...state.form, password :action.payload}};
+			valid = /^(?=.*[0-9])(?=.*[!@#$%^&*])[a-zA-Z0-9!@#$%^&*]{6,12}$/.test(action.payload);
+			if(valid){
+				return {...state, form : {...state.form, password: action.payload, passwordHasError : false, passwordErrorMsg : ''}}
+			} else{
+				return {...state, form : {...state.form, password: action.payload, passwordHasError : true, passwordErrorMsg : 'password should have number followed by a special character and a character'}}
+			}
 		case 'email_entered':
-			return {...state, form: {...state.form, email: action.payload}};
+			let emailUsername = (action.payload).split('@')[0];
+			valid = /^([a-zA-Z](((.)[a-zA-Z0-9]+|[a-zA-Z0-9]*))+){6,30}$/.test(emailUsername);
+			if(valid){
+				return {...state, form : {...state.form, email:action.payload, emailHasError : false, emailErrorMsg : ''}}
+			} else{
+				return {...state, form : {...state.form, email:action.payload, emailHasError : true, emailErrorMsg : 'provide a valid email id'}}
+			}
 		case 'loginRequested': 
 			return {...state, isfetching : true, error : null, loginRequested : true};
 		case 'LOGIN_SUCCESS':
@@ -43,17 +62,13 @@ export default function authReducer(state=initialState, action){
 			return {...state, isfetching: false, fetched: true, error : action.payload}
 		case 'REGISTER_SUCCESS':
 			return {...state, isfetching: false, fetched: true, userData: {...state.userData, sessionToken: action.payload}}
-		case 'validation': 
-			switch(action.payload.fieldName){
-				case 'username': 
-					return {...state, form : {...state.form, usernameHasError: !action.payload.status, usernameErrorMsg: action.payload.msg}}
-				case 'password':
-					return {...state, form : {...state.form, passwordHasError: !action.payload.status, passwordErrorMsg: action.payload.msg}}
-				case 'email':
-					return {...state, form : {...state.form, emailHasError: !action.payload.status, emailErrorMsg: action.payload.msg}}
-			}
-	}	
+		case 'FORGOTPASSWORD_FAILED' : 
+			return {...state, isfetching : false, fetched: false, error : action.payload}
+		case 'RESET_PASSWORD_SUCCESS': 
+			return {...state, isfetching : false , fetched : true}
+		case 'RESET_PASSWORD_REQUESTED':
+			return {...state, isfetching: true, fetched : false}
+	}
 	return state;
 }
-
 

@@ -15,7 +15,9 @@ import FormButton from '../components/button';
 import InputBox from '../components/inputBox';
 import * as authAction from '../actions/authActions';
 import {bindActionCreators} from 'redux';
-
+import SimpleAlert from 'react-native-simpledialog-android';
+import Dimensions from 'Dimensions'
+var {height, width} = Dimensions.get('window')
 
 const styles = StyleSheet.create({
 	container : {
@@ -26,10 +28,14 @@ const styles = StyleSheet.create({
 		flex:1
 	},
 	inputContainer: {
-		flex:1
+		flex:1,
+		minHeight : 200
+		// backgroundColor : 'blue'
 	},
 	buttonContainer: {
-		flex:2
+		flex:2,
+		minHeight: 100
+		// backgroundColor : 'steelblue'
 	},
 	textContainer : {
 		marginTop: 30,
@@ -48,7 +54,13 @@ function mapStateToProps(store){
 		isfetching : store.auth.isfetching,
 		fetched : store.auth.fetched,
 		error : store.auth.error,
-		registerRequested: store.auth.registerRequested
+		registerRequested: store.auth.registerRequested,
+		usernameHasError: store.auth.form.usernameHasError,
+		passwordHasError: store.auth.form.passwordHasError,
+		emailHasError: store.auth.form.emailHasError,
+		usernameErrorMsg : store.auth.form.usernameErrorMsg,
+		emailErrorMsg: store.auth.form.emailErrorMsg,
+		passwordErrorMsg: store.auth.form.passwordErrorMsg
 	}
 }
 
@@ -65,7 +77,15 @@ class register extends Component {
 		this.setInputValue = this.setInputValue.bind(this);
 	}
 	register(){
-		this.props.actions.register(this.props.username,this.props.password,this.props.email);
+		if(this.props.username){
+			SimpleAlert.alert('Error',this.props.usernameErrorMsg);
+		} else if(this.props.password){
+			SimpleAlert.alert('Error',this.props.passwordErrorMsg);
+		} else if(this.props.email){
+			SimpleAlert.alert('Error',this.props.emailErrorMsg);
+		}else{
+			this.props.actions.register(this.props.username,this.props.password,this.props.email);
+		}
 	}
 	setInputValue(fieldName, value){
 		this.props.actions.formValueChanges(fieldName, value);
@@ -76,22 +96,23 @@ class register extends Component {
 		const pass = this.props.password;
 		const email = this.props.email;
 		return (
-	        <ScrollView horizontal={false}>
-		    <View style={styles.container}>
-			    <View style={styles.inputContainer}>
-					<InputBox fieldName = {'username'} placeholderString = {'username'} setInputValue={this.setInputValue} fieldValue={this.props.username} />
-				    <InputBox fieldName = {'password'} secure={true} placeholderString = {'password'} setInputValue={this.setInputValue} fieldValue={this.props.password}/>
-					<InputBox fieldName = {'email'} placeholderString={"email"}  setInputValue={this.setInputValue} fieldValue={this.props.email}/>	
-				</View>
-				<View style={styles.buttonContainer}>
-					<FormButton buttonText={'register'} onButtonPress={this.register} disable={!(username && pass && email)}/>
-					<View style={styles.textContainer}>
-						<Text style={styles.textField} onPress={Actions.Login}>No Account Yet? Create One</Text>
+			<View style={styles.container}>
+		        <ScrollView horizontal={false}>
+				    <View style={styles.inputContainer}>
+						<InputBox fieldName = {'username'} placeholderString = {'username'} setInputValue={this.setInputValue} fieldValue={this.props.username} />
+					    <InputBox fieldName = {'password'} secure={true} placeholderString = {'password'} setInputValue={this.setInputValue} fieldValue={this.props.password}/>
+						<InputBox fieldName = {'email'} placeholderString={"email"}  setInputValue={this.setInputValue} fieldValue={this.props.email}/>	
 					</View>
-				</View>
-				{activityIndicator}
+					<View style={styles.buttonContainer}>
+						<FormButton buttonText={'register'} onButtonPress={this.register} disable={!(username && pass && email)}/>
+						<View style={styles.textContainer}>
+							<Text style={styles.textField} onPress={Actions.Login}>No Account Yet? Create One</Text>
+						</View>
+					</View>
+					{activityIndicator}
+				</ScrollView>
 			</View>
-			</ScrollView>   
+			   
 		        );
 	}
 }

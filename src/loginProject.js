@@ -17,6 +17,8 @@ import {
 import Login from './containers/login';
 import Register from './containers/register';
 import Home from './containers/home';
+import ForgotPassword from './containers/forgotPassword';
+
 console.log('class',Home);
 export default function native(){
 	var project = React.createClass({
@@ -35,6 +37,9 @@ export default function native(){
                         <Scene key='Home'
                         	component={Home}
                         	type='replace' />  
+                    	<Scene key='ForgotPassword'
+                    		component = {ForgotPassword}
+                    		type='replace'/>
                       </Scene>
                     </Router>
                     </Provider>);

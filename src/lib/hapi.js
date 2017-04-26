@@ -52,6 +52,26 @@ export class Hapi {
 	        throw (error)
 	    })
 	}
+	
+	async resetPassword (data) {
+    	return await this._fetch({
+			method: 'POST',
+			url: '/account/resetPasswordRequest',
+			body: data
+    	})
+		.then((response) => {
+		if ((response.status === 200 || response.status === 201)) {
+			return {}
+		} else {
+			var res = JSON.parse(response._bodyInit)
+			throw (res)
+		}
+		})
+		.catch((error) => {
+			throw (error)
+		})
+  	}
+  
 	async _fetch (opts) {
 	    opts = _.extend({
 	      method: 'GET',

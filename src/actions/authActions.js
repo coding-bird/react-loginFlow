@@ -96,6 +96,35 @@ export function fieldValidation(data){
 		payload : data
 	}
 }
+export function forgotPasswordRequest(){
+	return {
+		type : 'RESET_PASSWORD_REQUESTED'
+	}
+}
+export function forgotPasswordFailed(error){
+	return {
+		type: 'FORGOTPASSWORD_FAILED',
+		payload : error
+	}
+}
+export function resetPasswordSuccess(json){
+	return {
+		type : 'RESET_PASSWORD_SUCCESS'
+	}
+}
+export function forgetPassword(email){
+	return function(dispatch){
+		dispatch(forgotPasswordRequest());
+		return BackendFactory().resetPassword({email})
+		.then(() => {
+				dispatch(resetPasswordSuccess())
+				Actions.Login();
+		})
+		.catch((error)=>{
+			dispatch(forgotPasswordFailed(error));
+		})
+	}
+}
 // module.exports = {
 // 	formValueChanges
 // }
